@@ -32,7 +32,7 @@ interface GigabitEthernet0/0
 
 После разрыва кабеля между Router1 и Switch0 на интерфейсе Gi0/0, роль Active переключается на Router2, и связь между PC0 (192.168.0.250) и Server0 (192.168.1.50) сохраняется без прерываний.
 
-**1. Подключение Router1 к Switch0 на интерфейсе Gi0/0**  
+1. Подключение Router1 к Switch0 на интерфейсе Gi0/0  
 
 ![Router1 to Switch0 connection](router1-switch0-gi00.png)
 
