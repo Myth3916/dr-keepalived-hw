@@ -27,4 +27,78 @@ interface GigabitEthernet0/0
 ![img](img/test-after-cable-disconnect.png)
 
 
+Задание 2
+На двух виртуальных машинах Ubuntu установлены Keepalived и nginx. Написан bash-скрипт для проверки доступности веб-сервера (порт 80) и наличия файла index.html. Keepalived настроен на запуск этого скрипта каждые 3 секунды. При недоступности порта или отсутствии index.html плавающий IP 192.168.122.15 переключается на резервный сервер.
+
+
+1.Запущены две ВМ Ubuntu Server в одной подсети (192.168.122.0/24).
+2.Установлены nginx и keepalived на обеих ВМ.
+3.Создан bash-скрипт /usr/local/bin/check_nginx.sh с правами на выполнение.
+4.Настроен keepalived.conf с использованием vrrp_script.
+5.Выполнена проверка: удалён index.html → IP переключился на BACKUP.
+6. Вернул index.html → IP вернулся на MASTER (благодаря preempt).
+7. Сделан скриншот с демонстрацией переключения IP.
+
+```bash
+#!/bin/bash
+# /usr/local/bin/check_nginx.sh
+if ! ss -tuln | grep -q ':80\b'; then
+  exit 1
+fi
+if [ ! -f "/var/www/html/index.html" ]; then
+  exit 1
+fi
+exit 0
+```
+
+```bash
+# /etc/keepalived/keepalived.conf (MASTER)
+vrrp_script chk_nginx {
+  script "/usr/local/bin/check_nginx.sh"
+  interval 3
+  fall 2
+  rise 2
+}
+vrrp_instance VI_1 {
+  state MASTER
+  interface enp1s0
+  virtual_router_id 15
+  priority 255
+  advert_int 1
+  preempt
+  virtual_ipaddress {
+    192.168.122.15/24
+  }
+  track_script {
+    chk_nginx
+  }
+}
+```
+
+```bash
+# /etc/keepalived/keepalived.conf (BACKUP)
+vrrp_script chk_nginx {
+  script "/usr/local/bin/check_nginx.sh"
+  interval 3
+  fall 2
+  rise 2
+}
+vrrp_instance VI_1 {
+  state BACKUP
+  interface enp1s0
+  virtual_router_id 15
+  priority 100
+  advert_int 1
+  preempt
+  virtual_ipaddress {
+    192.168.122.15/24
+  }
+  track_script {
+    chk_nginx
+  }
+}
+```
+
+![Keepalived failover test](img/keepalived-failover.png)
+
 
