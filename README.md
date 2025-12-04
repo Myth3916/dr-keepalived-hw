@@ -21,7 +21,6 @@ interface GigabitEthernet0/0
  standby 1 ip 192.168.0.1
  standby 1 priority 105
  standby 1 preempt
- standby 1 track GigabitEthernet0/0 decrement 20
 
 Конфигурация на Router2:
 
@@ -30,17 +29,19 @@ interface GigabitEthernet0/0
  standby 1 ip 192.168.0.1
  standby 1 priority 100
  standby 1 preempt
- standby 1 track GigabitEthernet0/0 decrement 20
 
 После разрыва кабеля между Router1 и Switch0 на интерфейсе Gi0/0, роль Active переключается на Router2, и связь между PC0 (192.168.0.250) и Server0 (192.168.1.50) сохраняется без прерываний.
 
 **1. Подключение Router1 к Switch0 на интерфейсе Gi0/0**  
+
 ![Router1 to Switch0 connection](router1-switch0-gi00.png)
 
 **2. Схема после разрыва кабеля (тест отказоустойчивости)**  
+
 ![Cable disconnected — HSRP failover test](test-after-cable-disconnect.png)
 
 **3. CLI: настройка HSRP с отслеживанием интерфейса**  
+
 ![HSRP CLI configuration](hsrp-cli-configuration.png)
 
 
