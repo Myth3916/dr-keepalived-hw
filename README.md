@@ -22,7 +22,7 @@ interface GigabitEthernet0/0
  standby 1 priority 105
  standby 1 preempt
 
-(img/hsrp-cli-configuration.png)
-(img/router1-switch0-gi00.png)
-(img/test-after-cable-disconnect.png)
+(.img/hsrp-cli-configuration.png)
+(.img/router1-switch0-gi00.png)
+(.img/test-after-cable-disconnect.png)
 
